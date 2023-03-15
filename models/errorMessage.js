@@ -1,0 +1,23 @@
+module.exports = {
+    "ClientCompanyNameErrorMessage" : "Company Name Must be filled",
+    "ClientNameErrorMessage" : "Name Must be filled",
+    "ClientAddressErrorMessage" : "Address  Must be filled",
+    "ClientPhoneErrorMessage" : "Phone Number not valid",
+    "ClientEmailErrorMessage" : "Email not valid",
+    "ClientAmountErrorMessage" : "Amount Must be filled",
+    "ClientBalanceErrorMessage" : "Balance Must be filled",
+    "ClientRecordFetchErrorMessage" : "Error in fetching records",
+    "ClientCountErrorMessage": "Error in counting records",
+    "ClientExistErrorMessage" : "Clint does not exist",
+    "ClientAlreadyDeletedErrorMessage" : "Client already deleted",
+    "ClientRemoveErrorMessage" : "Please remove after sometime",
+    "ClientInvalidErrorMessage" : "Invalid Object Id /Client not exist",
+    "UpdateDocumentErrorMessage" : "Error occured while updating the docutment",
+    "ProductNameErrorMessage" : "Product Name Must be filled",
+    "ProductCodeErrorMessage" : "Product Code Must be filled",
+    "ProductExistErrorMessage" : "Product does not exist",
+    "ProductAlreadyDeletedErrorMessage" : "Product already deleted",
+    "ProductRemoveErrorMessage" : "please remove after sometime",
+    "ProductInvalidErrorMessage" : "Invalid Object Id /Product not exist",
+    
+}
