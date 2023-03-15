@@ -6,7 +6,9 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 // const asyncWrapper = require('../middleware/async')
 // const { createCustomError } = require('../errors/custom-error')
-
+const helloUser = (req, res) => {
+  return res.status(200).json({ message: 'Hello from User ', success: true })
+}
 const createUser = async (req, res) => {
   try {
     const hashedPassword = passwordHash.generate(req.body.user_password)
@@ -269,6 +271,7 @@ const removetaxUser = async (req, res) => {
   }
 }
 module.exports = {
+  helloUser
   createUser,
   loginUser,
   forgotUser,
