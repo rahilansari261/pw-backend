@@ -14,7 +14,7 @@ const {
   removetaxUser,
 } = require('../controllers/users')
 
-router.route('/hello').post(helloUser)
+router.route('/hello').get(helloUser)
 router.route('/register2').post(createUser)
 router.route('/login').post(loginUser)
 router.route('/forgot').post(forgotUser)
