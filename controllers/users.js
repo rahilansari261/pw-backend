@@ -271,7 +271,7 @@ const removetaxUser = async (req, res) => {
   }
 }
 module.exports = {
-  helloUser
+  helloUser,
   createUser,
   loginUser,
   forgotUser,
