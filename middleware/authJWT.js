@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 const authJWT = async (req, res, next) => {
   // prettier-ignore
-  const token =req.body.token || req.query.token || req.headers['x-access-token']
+  const token =req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['Authorization']
   // prettier-ignore
   if(!token) return res.status(403).send({success: false,message: 'No token provided.'})
  else {
