@@ -1,8 +1,9 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 const authJWT = async (req, res, next) => {
+  console.log(req.headers);
   // prettier-ignore
-  const token =req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['Authorization']
+  const token =req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization']
   // prettier-ignore
   if(!token) return res.status(403).send({success: false,message: 'No token provided.'})
  else {
@@ -21,6 +22,6 @@ const authJWT = async (req, res, next) => {
     return res.status(403).json({success: false,message: 'Fail to authenticate token.'})
    }
  }
-}
+};
 
-module.exports = authJWT
+module.exports = authJWT;
