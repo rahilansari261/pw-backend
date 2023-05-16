@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const authJWT = async (req, res, next) => {
-  console.log(req.headers);
+const authJWT = async (req, res, next) => {  
   // prettier-ignore
   const token =req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization']
   // prettier-ignore
