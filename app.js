@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -7,10 +8,8 @@ const products = require("./routes/products");
 const clients = require("./routes/clients");
 const invoices = require("./routes/invoices");
 const connectDB = require("./db/connect");
-require("dotenv").config();
 const notFound = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
-
 // variables
 app.set("superSecret", process.env.SECRET);
 
@@ -33,9 +32,7 @@ const port = process.env.PORT || 5001;
 const init = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
-    app.listen(port, () =>
-      console.log(`Server is listening on port ${port}...`)
-    );
+    app.listen(port, () => console.log(`Server is listening on port ${port}...`));
   } catch (error) {
     console.log(error);
   }
