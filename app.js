@@ -12,7 +12,7 @@ const notFound = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 // variables
 app.set("superSecret", process.env.SECRET);
-
+console.log(process.env)
 // middleware
 app.use(express.static("./public"));
 app.use(express.json());
