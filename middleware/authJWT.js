@@ -6,7 +6,6 @@ const authJWT = async (req, res, next) => {
   else {
     try {
       const token = bearerToken && bearerToken.split(" ")[1];
-      console.log(process.env.SECRET);
       const verifiedToken = jwt.verify(token, process.env.SECRET);
       const decoded = jwt.decode(token, { complete: true });
       req.doc = decoded.payload;
@@ -14,7 +13,6 @@ const authJWT = async (req, res, next) => {
       res.set("token", newtoken);
       next();
     } catch (error) {
-      console.log(error);
       return res.status(403).json({ success: false, message: "Fail to authenticate token." });
     }
   }
