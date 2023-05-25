@@ -6,6 +6,7 @@ const authJWT = async (req, res, next) => {
   else {
     try {
       const token = bearerToken && bearerToken.split(" ")[1];
+      console.log(process.env.SECRET);
       const verifiedToken = jwt.verify(token, process.env.SECRET);
       const decoded = jwt.decode(token, { complete: true });
       req.doc = decoded.payload;
