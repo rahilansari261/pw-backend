@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const authJWT = require('../middleware/authJWT')
 const {
-  helloUser,
+  getUser,
   createUser,
   loginUser,
   forgotUser,
@@ -14,7 +14,7 @@ const {
   removetaxUser,
 } = require('../controllers/users')
 
-router.route('/hello').get(helloUser)
+router.route('/:id').get(getUser)
 router.route('/register2').post(createUser)
 router.route('/login').post(loginUser)
 router.route('/forgot').post(forgotUser)

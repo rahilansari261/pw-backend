@@ -1,28 +1,42 @@
 // const express = require('express')
 // const app = express()
-const User = require('../models/User')
-const passwordHash = require('password-hash')
-const jwt = require('jsonwebtoken')
-require('dotenv').config()
+const User = require("../models/User");
+const passwordHash = require("password-hash");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 // const asyncWrapper = require('../middleware/async')
 // const { createCustomError } = require('../errors/custom-error')
-const helloUser = (req, res) => {
-  return res.status(200).json({ message: 'Hello from User ', success: true, status: 'ok' })
-}
+const getUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // prettier-ignore
+    if (!id) return res.status(200).json({message: 'User id not provided',data: null,success: false,})
+    // prettier-ignore
+    const doc = await User.findById({ _id: id })
+    // prettier-ignore
+    if (!doc) return res.status(200).json({ message: error, data: null, success: false })
+    // prettier-ignore
+    res.status(200).json({ message: 'User Information ', data: doc, success: true })
+  } catch (error) {
+    console.log(error.message);
+    // prettier-ignore
+    res.status(200).json({message: error.message,success: false,})
+  }
+};
 const createUser = async (req, res) => {
   try {
-    const hashedPassword = passwordHash.generate(req.body.user_password)
-    const myDate = new Date()
-    myDate.setDate(myDate.getDate() + 14)
+    const hashedPassword = passwordHash.generate(req.body.user_password);
+    const myDate = new Date();
+    myDate.setDate(myDate.getDate() + 14);
 
     const newUser = {
-      _id: require('mongoose').Types.ObjectId(),
+      _id: require("mongoose").Types.ObjectId(),
       user_company_name: req.body.user_company_name,
       user_name: req.body.user_name,
-      user_tin: '',
-      user_stn: '',
-      user_address: '',
-      user_phone: '',
+      user_tin: "",
+      user_stn: "",
+      user_address: "",
+      user_phone: "",
       user_password: hashedPassword,
       user_email: req.body.user_email,
       user_lastModified: new Date(),
@@ -30,51 +44,51 @@ const createUser = async (req, res) => {
       user_verification: false,
       user_subscriptionEndDate: myDate,
       user_settings: {
-        user_logo: req.body.user_logo || 'default.jpg',
-        user_template: req.body.user_template || 'default.html',
-        user_tc: req.body.user_tc || '',
+        user_logo: req.body.user_logo || "default.jpg",
+        user_template: req.body.user_template || "default.html",
+        user_tc: req.body.user_tc || "",
         user_tax: [
           {
-            _id: require('mongoose').Types.ObjectId(),
-            type: 'VAT',
+            _id: require("mongoose").Types.ObjectId(),
+            type: "VAT",
             rate: 14.5,
           },
           {
-            _id: require('mongoose').Types.ObjectId(),
-            type: 'VAT',
+            _id: require("mongoose").Types.ObjectId(),
+            type: "VAT",
             rate: 5.5,
           },
           {
-            _id: require('mongoose').Types.ObjectId(),
-            type: 'CST',
+            _id: require("mongoose").Types.ObjectId(),
+            type: "CST",
             rate: 2,
           },
           {
-            _id: require('mongoose').Types.ObjectId(),
-            type: 'No Tax',
+            _id: require("mongoose").Types.ObjectId(),
+            type: "No Tax",
             rate: 0,
           },
         ],
       },
       user_account: [
         {
-          entry_remarks: '',
+          entry_remarks: "",
           entry_amount: 0,
         },
       ],
-    }
-    const doc = await User.create(newUser)
+    };
+    const doc = await User.create(newUser);
     // prettier-ignore
     if (!doc) return res.status(200).json({ message: error, data: null, success: false })
     //prettier-ignore
     res.status(200).json({ message: 'User Added Successfully', data: doc, success: true, })
   } catch (error) {
-    res.status(500).json({ msg: error })
+    res.status(500).json({ msg: error });
   }
-}
+};
 const loginUser = async (req, res) => {
   try {
-    const docs = await User.findOne({ user_email: req.body.user_email })
+    const docs = await User.findOne({ user_email: req.body.user_email });
     //prettier-ignore
     if (!docs) return res.json({ success: false, message: 'Sorry, Email is not registered', })
     else {
@@ -120,13 +134,13 @@ const loginUser = async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(500).json({ msg: error.message })
+    res.status(500).json({ msg: error.message });
   }
-}
-const forgotUser = async (req, res) => { }
+};
+const forgotUser = async (req, res) => {};
 const verifyUser = async (req, res) => {
   try {
-    const token = req.params.c
+    const token = req.params.c;
     // prettier-ignore
     if (!token) return res.status(403).send({ success: false, message: 'No token provided. 2' })
     // decode token
@@ -156,11 +170,11 @@ const verifyUser = async (req, res) => {
       }
     }
   } catch (error) {
-    res.status(500).json({ msg: error.message })
+    res.status(500).json({ msg: error.message });
   }
-}
+};
 const resetUser = async (req, res) => {
-  const token = req.params.c
+  const token = req.params.c;
   // prettier-ignore
   if (!token) return res.status(403).send({ success: false, message: 'No token provided. 2' })
   // decode token
@@ -191,14 +205,14 @@ const resetUser = async (req, res) => {
       }
     })
   }
-}
+};
 const updateUser = async (req, res) => {
   try {
-    const userData = req.body.userData
+    const userData = req.body.userData;
     // prettier-ignore
     if (!userData) return res.status(200).json(getFailureResponse('User Data is missing', false))
 
-    const data = await User.findOne({ _id: req.doc._id })
+    const data = await User.findOne({ _id: req.doc._id });
     // prettier-ignore
     if (!data) return res.status(200).json({ message: 'No user found with the given id', success: false, })
     else {
@@ -218,16 +232,16 @@ const updateUser = async (req, res) => {
     // prettier-ignore
     res.status(200).json({ message: error, success: false, })
   }
-}
+};
 const passwordchangeUser = async (req, res) => {
-  const passwordData = req.body.passwordData
+  const passwordData = req.body.passwordData;
   // prettier-ignore
   if (!passwordData) return res.status(200).json(getFailureResponse('User Data is missing', false))
   // prettier-ignore
   if (passwordData.newPassword != passwordData.newPassword2) return res.json({ success: false, message: 'Password do not match', })
 
   try {
-    const data = await User.findOne({ _id: req.doc._id })
+    const data = await User.findOne({ _id: req.doc._id });
     // prettier-ignore
     if (!passwordHash.verify(passwordData.oldPassword, data.user_password)) return res.json({ success: false, message: 'Wrong  Old Password' })
     else {
@@ -240,13 +254,13 @@ const passwordchangeUser = async (req, res) => {
     // prettier-ignore
     res.status(500).json({ msg: error })
   }
-}
+};
 const addtaxUser = async (req, res) => {
   try {
-    const userData = req.body.userData
+    const userData = req.body.userData;
     // prettier-ignore
     if (!userData) return res.status(200).json(getFailureResponse('User Data is missing', false))
-    userData._id = require('mongoose').Types.ObjectId()
+    userData._id = require("mongoose").Types.ObjectId();
     // prettier-ignore
     const docs = await User.updateOne({ _id: req.doc._id, }, { $push: { 'user_settings.user_tax': userData, }, }, { upsert: true, },)
     // prettier-ignore
@@ -255,12 +269,12 @@ const addtaxUser = async (req, res) => {
     // prettier-ignore
     res.status(400).json({ message: error, success: false, data: null })
   }
-}
+};
 const removetaxUser = async (req, res) => {
   try {
     // prettier-ignore
     if (!req.body.userData) return res.status(400).json(getFailureResponse('User Data is missing', false))
-    const tax_id = require('mongoose').Types.ObjectId(req.params.taxId)
+    const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
     // prettier-ignore
     User.updateOne({ _id: req.doc._id }, { $pull: { 'user_settings.user_tax': { _id: tax_id } } }, { upsert: true })
     // prettier-ignore
@@ -269,9 +283,9 @@ const removetaxUser = async (req, res) => {
     // prettier-ignore
     res.status(400).json({ message: error, success: false })
   }
-}
+};
 module.exports = {
-  helloUser,
+  getUser,
   createUser,
   loginUser,
   forgotUser,
@@ -281,4 +295,4 @@ module.exports = {
   passwordchangeUser,
   addtaxUser,
   removetaxUser,
-}
+};
