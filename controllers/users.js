@@ -90,14 +90,14 @@ const loginUser = async (req, res) => {
   try {
     const docs = await User.findOne({ user_email: req.body.user_email });
     //prettier-ignore
-    if (!docs) return res.json({ success: false, message: 'Sorry, Email is not registered', })
+    if (!docs) return res.status(500).json({ success: false, message: 'Sorry, Email is not registered', })
     else {
       //prettier-ignore
-      if (!docs.user_subscriptionStatus) return res.json({ success: false, message: 'Authentication failed. Account Disabled', })
+      if (!docs.user_subscriptionStatus) return res.status(500).json({ success: false, message: 'Authentication failed. Account Disabled', })
       //prettier-ignore
-      if (!docs.user_verification) return res.json({ success: false, message: 'Authentication failed. Account not yet verified', })
+      if (!docs.user_verification) return res.status(500).json({ success: false, message: 'Authentication failed. Account not yet verified', })
       //prettier-ignore
-      if (!passwordHash.verify(req.body.user_password, docs.user_password)) return res.json({ success: false, message: 'Authentication failed. Wrong Password', })
+      if (!passwordHash.verify(req.body.user_password, docs.user_password)) return res.status(500).json({ success: false, message: 'Authentication failed. Wrong Password', })
       else {
         const now = new Date()
         const payLoad = {
