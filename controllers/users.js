@@ -238,14 +238,14 @@ const passwordchangeUser = async (req, res) => {
   // prettier-ignore
   if (!passwordData) return res.status(200).json(getFailureResponse('User Data is missing', false))
   // prettier-ignore
-  if (passwordData.newPassword != passwordData.newPassword2) return res.json({ success: false, message: 'Password do not match', })
+  if (passwordData.new_password != passwordData.confirm_password) return res.json({ success: false, message: 'Password do not match', })
 
   try {
     const data = await User.findOne({ _id: req.doc._id });
     // prettier-ignore
-    if (!passwordHash.verify(passwordData.oldPassword, data.user_password)) return res.json({ success: false, message: 'Wrong  Old Password' })
+    if (!passwordHash.verify(passwordData.old_password, data.user_password)) return res.json({ success: false, message: 'Wrong  Old Password' })
     else {
-      data.user_password = passwordHash.generate(passwordData.newPassword)
+      data.user_password = passwordHash.generate(passwordData.new_password)
       data.save()
       // prettier-ignore
       res.status(200).json({ message: 'Password Has Change, Use your new password to login', success: true, })
