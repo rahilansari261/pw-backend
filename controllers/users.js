@@ -286,7 +286,7 @@ const addtaxUser = async (req, res) => {
 //   }
 // };
 
-const removeTaxUser = async (req, res) => {
+const removetaxUser = async (req, res) => {
   try {
     const taxId = req.params.taxId;
     const userId = req.doc._id;
