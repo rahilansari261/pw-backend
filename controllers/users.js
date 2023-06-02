@@ -270,21 +270,43 @@ const addtaxUser = async (req, res) => {
     res.status(400).json({ message: error, success: false, data: null })
   }
 };
-const removetaxUser = async (req, res) => {
+// const removetaxUser = async (req, res) => {
+//   try {
+//     // prettier-ignore
+//     // if (!req.body.userData) return res.status(400).json(getFailureResponse('User Data is missing', false))
+//     // const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
+//     const tax_id = req.params.taxId;
+//     // prettier-ignore
+//     const user = await User.updateOne({ _id: req.doc._id }, { $pull: { 'user_settings.user_tax': { _id: tax_id } } })
+//     // prettier-ignore
+//     res.status(200).json({ message: 'Tax Removed Successfully', success: true , docs: user})
+//   } catch (error) {
+//     // prettier-ignore
+//     res.status(400).json({ message: error, success: false })
+//   }
+// };
+
+const removeTaxUser = async (req, res) => {
   try {
-    // prettier-ignore
-    // if (!req.body.userData) return res.status(400).json(getFailureResponse('User Data is missing', false))
-    // const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
-    const tax_id = req.params.taxId;
-    // prettier-ignore
-    const user = await User.updateOne({ _id: req.doc._id }, { $pull: { 'user_settings.user_tax': { _id: tax_id } } })
-    // prettier-ignore
-    res.status(200).json({ message: 'Tax Removed Successfully', success: true , docs: user})
+    const taxId = req.params.taxId;
+    const userId = req.doc._id;
+
+    const user = await User.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { 'user_settings.user_tax': { _id: taxId } } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    return res.status(200).json({ success: true, message: 'Tax removed successfully', user });
   } catch (error) {
-    // prettier-ignore
-    res.status(400).json({ message: error, success: false })
+    return res.status(500).json({ success: false, message: 'Internal server error', error });
   }
 };
+
 module.exports = {
   getUser,
   createUser,
