@@ -273,7 +273,7 @@ const addtaxUser = async (req, res) => {
 const removetaxUser = async (req, res) => {
   try {
     // prettier-ignore
-    if (!req.body.userData) return res.status(400).json(getFailureResponse('User Data is missing', false))
+    // if (!req.body.userData) return res.status(400).json(getFailureResponse('User Data is missing', false))
     // const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
     const tax_id = req.params.taxId;
     // prettier-ignore
