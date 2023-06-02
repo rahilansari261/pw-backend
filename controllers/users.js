@@ -277,9 +277,9 @@ const removetaxUser = async (req, res) => {
     // const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
     const tax_id = req.params.taxId;
     // prettier-ignore
-    User.updateOne({ _id: req.doc._id }, { $pull: { 'user_settings.user_tax': { _id: tax_id } } }, { upsert: true })
+    const user = await User.updateOne({ _id: req.doc._id }, { $pull: { 'user_settings.user_tax': { _id: tax_id } } }, { upsert: true })
     // prettier-ignore
-    res.status(200).json({ message: 'Tax Removed Successfully', success: true })
+    res.status(200).json({ message: 'Tax Removed Successfully', success: true , docs: user})
   } catch (error) {
     // prettier-ignore
     res.status(400).json({ message: error, success: false })
