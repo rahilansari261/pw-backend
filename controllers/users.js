@@ -288,22 +288,18 @@ const addtaxUser = async (req, res) => {
 
 const removetaxUser = async (req, res) => {
   try {
-    const taxId = req.params.taxId;
+    const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
     const userId = req.doc._id;
 
-    const user = await User.findOneAndUpdate(
-      { _id: userId },
-      { $pull: { 'user_settings.user_tax': { _id: taxId } } },
-      { new: true }
-    );
+    const user = await User.findOneAndUpdate({ _id: userId }, { $pull: { "user_settings.user_tax": { _id: tax_id } } }, { new: true });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    return res.status(200).json({ success: true, message: 'Tax removed successfully', user });
+    return res.status(200).json({ success: true, message: "Tax removed successfully", user });
   } catch (error) {
-    return res.status(500).json({ success: false, message: 'Internal server error', error });
+    return res.status(500).json({ success: false, message: "Internal server error", error });
   }
 };
 
