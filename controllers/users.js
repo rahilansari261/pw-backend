@@ -1,4 +1,4 @@
-const { ObjectId } = require("mongodb");
+const { ObjectId } = require("bson");
 // const app = express()
 const User = require("../models/User");
 const passwordHash = require("password-hash");
@@ -255,12 +255,22 @@ const passwordchangeUser = async (req, res) => {
     res.status(500).json({ msg: error })
   }
 };
+
+function convertUUIDtoObjectID(uuid) {
+  // Remove hyphens from UUID and convert it to a hexadecimal string
+  const hexString = uuid.replace(/-/g, "");
+
+  // Create a new ObjectID instance from the hexadecimal string
+  const objectId = new ObjectID(hexString);
+
+  return objectId;
+}
 const addtaxUser = async (req, res) => {
   try {
     const userData = req.body.userData;
     // prettier-ignore
     if (!userData) return res.status(200).json(getFailureResponse('User Data is missing', false))
-    userData._id = new ObjectId(userData._id);
+    userData._id = convertUUIDtoObjectID(userData._id);
     // prettier-ignore
     const docs = await User.updateOne({ _id: req.doc._id, }, { $push: { 'user_settings.user_tax': userData, }, }, { upsert: true, },)
     // prettier-ignore
