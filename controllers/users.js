@@ -260,14 +260,15 @@ const addtaxUser = async (req, res) => {
     const userData = req.body.userData;
     // prettier-ignore
     if (!userData) return res.status(200).json(getFailureResponse('User Data is missing', false))
-    userData._id = require("mongoose").Types.ObjectId(userData._id);
+    userData._id = new ObjectId(userData._id);
     // prettier-ignore
     const docs = await User.updateOne({ _id: req.doc._id, }, { $push: { 'user_settings.user_tax': userData, }, }, { upsert: true, },)
     // prettier-ignore
     res.status(200).json({ message: 'Tax Added Successfully', success: true, data: docs })
   } catch (error) {
     // prettier-ignore
-    res.status(400).json({ message: error, success: false, data: null })
+    console.log(error)
+    res.status(400).json({ message: error, success: false, data: null });
   }
 };
 // const removetaxUser = async (req, res) => {
