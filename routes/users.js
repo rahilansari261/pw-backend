@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authJWT = require("../middleware/authJWT");
-const { getUser, createUser, loginUser, forgotUser, verifyUser, resetUser, updateUser, passwordchangeUser, addtaxUser, removetaxUser } = require("../controllers/users");
+const { getUser, createUser, loginUser, forgotUser, verifyUser, resetUser, updateUser, passwordchangeUser, addtaxUser, removeTaxUser, addTandC } = require("../controllers/users");
 
 router.route("/:id").get(authJWT, getUser);
 router.route("/register2").post(createUser);
@@ -12,5 +12,6 @@ router.route("/reset/:c").post(resetUser);
 router.route("/update").post(authJWT, updateUser);
 router.route("/passwordchange").post(authJWT, passwordchangeUser);
 router.route("/settings/addtax").post(authJWT, addtaxUser);
-router.route("/settings/removetax/:taxId").get(authJWT, removetaxUser);
+router.route("/settings/removetax/:taxId").get(authJWT, removeTaxUser);
+router.route("/settings/addtandc").post(authJWT, addTandC);
 module.exports = router;

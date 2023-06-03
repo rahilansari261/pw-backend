@@ -256,15 +256,6 @@ const passwordchangeUser = async (req, res) => {
   }
 };
 
-// function convertUUIDtoObjectID(uuid) {
-//   // Remove hyphens from UUID and convert it to a hexadecimal string
-//   const hexString = uuid.replace(/-/g, "");
-
-//   // Create a new ObjectID instance from the hexadecimal string
-//   const objectId = new ObjectID(hexString);
-
-//   return objectId;
-// }
 const addtaxUser = async (req, res) => {
   try {
     const userData = req.body.userData;
@@ -281,23 +272,8 @@ const addtaxUser = async (req, res) => {
     res.status(400).json({ message: error, success: false, data: null });
   }
 };
-// const removetaxUser = async (req, res) => {
-//   try {
-//     // prettier-ignore
-//     // if (!req.body.userData) return res.status(400).json(getFailureResponse('User Data is missing', false))
-//     // const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
-//     const tax_id = req.params.taxId;
-//     // prettier-ignore
-//     const user = await User.updateOne({ _id: req.doc._id }, { $pull: { 'user_settings.user_tax': { _id: tax_id } } })
-//     // prettier-ignore
-//     res.status(200).json({ message: 'Tax Removed Successfully', success: true , docs: user})
-//   } catch (error) {
-//     // prettier-ignore
-//     res.status(400).json({ message: error, success: false })
-//   }
-// };
 
-const removetaxUser = async (req, res) => {
+const removeTaxUser = async (req, res) => {
   try {
     // const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
     const tax_id = req.params.taxId;
@@ -315,6 +291,25 @@ const removetaxUser = async (req, res) => {
   }
 };
 
+const addTandC = async (req, res) => {
+  try {
+    const userData = req.body.userData;
+    // prettier-ignore
+    if (!userData) return res.status(200).json(getFailureResponse('User Data is missing', false))
+    // userData._id = userData._id;
+    // prettier-ignore
+    const data = await User.findOne({ _id: req.doc._id });
+    data.user_settings.user_tc = userData.user_tc;
+    data.save();
+    // prettier-ignore
+    res.status(200).json({ message: 'Terms and Conditions Updated Successfully', data: data, success: true, })
+  } catch (error) {
+    // prettier-ignore
+    console.log(error)
+    res.status(400).json({ message: error, success: false, data: null });
+  }
+};
+
 module.exports = {
   getUser,
   createUser,
@@ -325,5 +320,6 @@ module.exports = {
   updateUser,
   passwordchangeUser,
   addtaxUser,
-  removetaxUser,
+  removeTaxUser,
+  addTandC,
 };
