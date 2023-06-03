@@ -1,4 +1,4 @@
-const { ObjectID } = require("bson");
+// const { ObjectID } = require("bson");
 // const app = express()
 const User = require("../models/User");
 const passwordHash = require("password-hash");
@@ -256,23 +256,23 @@ const passwordchangeUser = async (req, res) => {
   }
 };
 
-function convertUUIDtoObjectID(uuid) {
-  // Remove hyphens from UUID and convert it to a hexadecimal string
-  const hexString = uuid.replace(/-/g, "");
+// function convertUUIDtoObjectID(uuid) {
+//   // Remove hyphens from UUID and convert it to a hexadecimal string
+//   const hexString = uuid.replace(/-/g, "");
 
-  // Create a new ObjectID instance from the hexadecimal string
-  const objectId = new ObjectID(hexString);
+//   // Create a new ObjectID instance from the hexadecimal string
+//   const objectId = new ObjectID(hexString);
 
-  return objectId;
-}
+//   return objectId;
+// }
 const addtaxUser = async (req, res) => {
   try {
     const userData = req.body.userData;
     // prettier-ignore
     if (!userData) return res.status(200).json(getFailureResponse('User Data is missing', false))
-    userData._id = convertUUIDtoObjectID(userData._id);
+    // userData._id = userData._id;
     // prettier-ignore
-    const docs = await User.updateOne({ _id: req.doc._id, }, { $push: { 'user_settings.user_tax': userData, }, }, { upsert: true, },)
+    const docs = await User.updateOne({ _id: req.doc._id }, { $push: { "user_settings.user_tax": userData } }, { upsert: true });
     // prettier-ignore
     res.status(200).json({ message: 'Tax Added Successfully', success: true, data: docs })
   } catch (error) {
@@ -299,7 +299,8 @@ const addtaxUser = async (req, res) => {
 
 const removetaxUser = async (req, res) => {
   try {
-    const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
+    // const tax_id = require("mongoose").Types.ObjectId(req.params.taxId);
+    const tax_id = req.params.taxId;
     const userId = req.doc._id;
 
     const user = await User.findOneAndUpdate({ _id: userId }, { $pull: { "user_settings.user_tax": { _id: tax_id } } }, { new: true });
