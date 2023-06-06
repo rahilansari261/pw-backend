@@ -219,7 +219,7 @@ const cancelInvoice = async (req, res) => {
     // prettier-ignore
     await updateCancelAccounts(invoiceData, AccountCollection, ClientCollection)
     // prettier-ignore
-    res.status(200).json({message: 'invoice Cancelled  Successfully',data: doc, success: true,})
+    res.status(200).json({message: 'invoice Cancelled  Successfully',data: invoiceData, success: true,})
   } catch (error) {
     console.log(error);
     res.status(200).json({ message: error.msg, data: null, success: false });
