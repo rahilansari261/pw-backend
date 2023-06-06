@@ -104,6 +104,7 @@ const getAllProducts = async (req, res) => {
   try {
     // prettier-ignore
     const ProductCollection = mongoose.model(`${req.doc._id}-products`, require('../models/Product'))
+    console.log(ProductCollection);
     // prettier-ignore
     const doc = await ProductCollection.find({ 'product_status': true }).select({ 'product_name': 1, 'product_description':1, 'product_code':1 }).exec()
     // prettier-ignore
