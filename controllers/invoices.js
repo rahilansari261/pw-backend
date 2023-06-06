@@ -220,6 +220,7 @@ const cancelInvoice = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: 'invoice Cancelled  Successfully',data: doc, success: true,})
   } catch (error) {
+    console.log(error)
     res.status(200).json({ message: error.msg, data: null, success: false });
   }
 };
