@@ -201,6 +201,7 @@ const getRecentInvoiceDetail = async (req, res) => {
 };
 const cancelInvoice = async (req, res) => {
   try {
+    const id = req.params.id;
     // prettier-ignore
     const InvoiceCollection = mongoose.model(`${req.doc._id}-invoices`, require('../models/Invoice'))
     // prettier-ignore
@@ -210,7 +211,7 @@ const cancelInvoice = async (req, res) => {
     // prettier-ignore
     const ClientCollection = mongoose.model(`${req.doc._id}-clients`, require('../models/Client'))
     // prettier-ignore
-    const invoiceData = await InvoiceCollection.findOneAndUpdate({ _id: req.doc._id },{'invoice_data.status': false})
+    const invoiceData = await InvoiceCollection.findOneAndUpdate({ _id: id },{'invoice_data.status': false})
     // prettier-ignore
     if (!invoiceData) return res.status(200).json({ message: error, data: null, success: false })
     // prettier-ignore
@@ -220,7 +221,7 @@ const cancelInvoice = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: 'invoice Cancelled  Successfully',data: doc, success: true,})
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(200).json({ message: error.msg, data: null, success: false });
   }
 };
