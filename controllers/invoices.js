@@ -1,20 +1,20 @@
-const mongoose = require('mongoose')
-const passwordHash = require('password-hash')
-require('dotenv').config()
-const jwt = require('jsonwebtoken')
+const mongoose = require("mongoose");
+const passwordHash = require("password-hash");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 // const asyncWrapper = require('../middleware/async')
 // const { createCustomError } = require('../errors/custom-error')
-const { dateFilter } = require('../utils/utils')
+const { dateFilter } = require("../utils/utils");
 const saleChart = async (date, value, ChartSaleCollection) => {
   try {
     //prettier-ignore
     const months = new Array('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec')
-    const givenDate = new Date(date || Date.now())
-    const month = '' + months[givenDate.getMonth()]
-    const year = givenDate.getFullYear()
+    const givenDate = new Date(date || Date.now());
+    const month = "" + months[givenDate.getMonth()];
+    const year = givenDate.getFullYear();
 
-    const monthAndYear = [month, year].join('-')
-    const saleData = await ChartSaleCollection.findOne({ month: monthAndYear })
+    const monthAndYear = [month, year].join("-");
+    const saleData = await ChartSaleCollection.findOne({ month: monthAndYear });
 
     if (saleData) {
       //prettier-ignore
@@ -23,14 +23,14 @@ const saleChart = async (date, value, ChartSaleCollection) => {
       const chart = {
         month: monthAndYear,
         stats: value,
-      }
-      const createdChartData = await ChartSaleCollection.create(chart)
+      };
+      const createdChartData = await ChartSaleCollection.create(chart);
     }
   } catch (error) {
     // prettier-ignore
-    return console.log(error);
+    return error;
   }
-}
+};
 // prettier-ignore
 const updateAccounts = async (invoice,AccountCollection,ClientCollection,isAdvance,InvoiceCollection) => {
   try{
@@ -58,7 +58,7 @@ const updateAccounts = async (invoice,AccountCollection,ClientCollection,isAdvan
   }
    } catch (error) {
     // prettier-ignore
-    return console.log(error);
+    return error;
   }
 }
 const updateCancelAccounts = async (invoice, accounts, ClientCollection) => {
@@ -68,21 +68,21 @@ const updateCancelAccounts = async (invoice, accounts, ClientCollection) => {
       client_name: invoice.client_data.client_name,
       client_company: invoice.client_data.client_company,
       entry_date: new Date(),
-      entry_remarks: 'Cancelled Invoice No ' + invoice.invoice_data.number,
-      entry_type: 'System',
+      entry_remarks: "Cancelled Invoice No " + invoice.invoice_data.number,
+      entry_type: "System",
       entry_amount_in: 0,
       entry_amount_out: invoice.invoice_data.grand_total * -1,
-    }
-    await AccountCollection.create(newAccountEntry)
+    };
+    await AccountCollection.create(newAccountEntry);
     // prettier-ignore
     await ClientCollection.findOneAndUpdate({ _id: newAccountEntry.client_id },{ $inc: { client_balance: newAccountEntry.
       entry_amount_out } })
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 const createInvoice = async (req, res) => {
-  const invoiceData = req.body.invoiceData
+  const invoiceData = req.body.invoiceData;
   // prettier-ignore
   if (!invoiceData) return res.status(200).json({message: ' Data Not Provided',data: null,success: false,})
   // prettier-ignore
@@ -94,7 +94,7 @@ const createInvoice = async (req, res) => {
   // prettier-ignore
   const ClientCollection = mongoose.model(`${req.doc._id}-clients`, require('../models/Client'))
 
-  const userDoc = await User.findById(req.doc._id)
+  const userDoc = await User.findById(req.doc._id);
   const newInvoice = {
     client_data: {
       client_company_name: invoiceData.client_data.client_company_name,
@@ -127,13 +127,13 @@ const createInvoice = async (req, res) => {
       status: true,
     },
     product_data: [],
-  }
+  };
   // TODO apply loop to save all the tax summary in the array.
   for (let i = 0; i < invoiceData.invoice_data.tax_summary.length; i++) {
     newInvoice.invoice_data.tax_summary.push({
       tax_name: invoiceData.invoice_data.tax_summary[i].tax_name,
       tax_amount: invoiceData.invoice_data.tax_summary[i].tax_amount,
-    })
+    });
   }
 
   for (let i = 0; i < invoiceData.product_data.length; i++) {
@@ -148,16 +148,15 @@ const createInvoice = async (req, res) => {
       tax_rate: invoiceData.product_data[i].tax_rate,
       tax_amount: invoiceData.product_data[i].tax_amount,
       row_total: invoiceData.product_data[i].row_total,
-    })
+    });
   }
 
   if (!userDoc.user_settings.user_invoice_number) {
-    newInvoice.invoice_data.number = 1
+    newInvoice.invoice_data.number = 1;
   } else {
-    newInvoice.invoice_data.number =
-      userDoc.user_settings.user_invoice_number + 1
+    newInvoice.invoice_data.number = userDoc.user_settings.user_invoice_number + 1;
   }
-  const createdInvoice = await InvoiceCollection.create(newInvoice)
+  const createdInvoice = await InvoiceCollection.create(newInvoice);
   // prettier-ignore
   if (!createdInvoice) return res.status(200).json({ message: error, data: null, success: false })
 
@@ -166,12 +165,12 @@ const createInvoice = async (req, res) => {
   // prettier-ignore
   if (!userData) return res.status(200).json({ message: error, data: null, success: false })
   // prettier-ignore
- await saleChart(newInvoice.invoice_data.date, newInvoice.invoice_data.grand_total, ChartSaleCollection)
+  await saleChart(newInvoice.invoice_data.date, newInvoice.invoice_data.grand_total, ChartSaleCollection)
   // prettier-ignore
- await updateAccounts(newInvoice, AccountCollection, ClientCollection, invoiceData.invoice_data.advancePayment, InvoiceCollection)
+  await updateAccounts(newInvoice, AccountCollection, ClientCollection, invoiceData.invoice_data.advancePayment, InvoiceCollection)
   // prettier-ignore
   res.status(200).json({message: 'invoice Added Successfully',data: doc, success: true,})
-}
+};
 const getInvoiceDetail = async (req, res) => {
   try {
     // prettier-ignore
@@ -183,9 +182,9 @@ const getInvoiceDetail = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: 'Invoice details',data: doc, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const getRecentInvoiceDetail = async (req, res) => {
   try {
     // prettier-ignore
@@ -197,154 +196,148 @@ const getRecentInvoiceDetail = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: 'Last invoice details',data: doc, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const cancelInvoice = async (req, res) => {
-  // prettier-ignore
-  const InvoiceCollection = mongoose.model(`${req.doc._id}-invoices`, require('../models/Invoice'))
-  // prettier-ignore
-  const ChartSaleCollection = mongoose.model(`${req.doc._id}-chartsale`, require('../models/ChartSale'))
-  // prettier-ignore
-  const AccountCollection = mongoose.model(`${req.doc._id}-accounts`, require('../models/Account'))
-  // prettier-ignore
-  const ClientCollection = mongoose.model(`${req.doc._id}-clients`, require('../models/Client'))
-  // prettier-ignore
-  const invoiceData = await InvoiceCollection.findOneAndUpdate({ _id: req.doc._id },{'invoice_data.status': false})
-  // prettier-ignore
-  if (!invoiceData) return res.status(200).json({ message: error, data: null, success: false })
-  // prettier-ignore
-  await saleChart(invoiceData.invoice_data.date, -invoiceData.invoice_data.grand_total, ChartSaleCollection)
-  // prettier-ignore
-  await updateCancelAccounts(invoiceData, AccountCollection, ClientCollection)
-  // prettier-ignore
-  res.status(200).json({message: 'invoice Cancelled  Successfully',data: doc, success: true,})
-}
+  try {
+    // prettier-ignore
+    const InvoiceCollection = mongoose.model(`${req.doc._id}-invoices`, require('../models/Invoice'))
+    // prettier-ignore
+    const ChartSaleCollection = mongoose.model(`${req.doc._id}-chartsale`, require('../models/ChartSale'))
+    // prettier-ignore
+    const AccountCollection = mongoose.model(`${req.doc._id}-accounts`, require('../models/Account'))
+    // prettier-ignore
+    const ClientCollection = mongoose.model(`${req.doc._id}-clients`, require('../models/Client'))
+    // prettier-ignore
+    const invoiceData = await InvoiceCollection.findOneAndUpdate({ _id: req.doc._id },{'invoice_data.status': false})
+    // prettier-ignore
+    if (!invoiceData) return res.status(200).json({ message: error, data: null, success: false })
+    // prettier-ignore
+    await saleChart(invoiceData.invoice_data.date, -invoiceData.invoice_data.grand_total, ChartSaleCollection)
+    // prettier-ignore
+    await updateCancelAccounts(invoiceData, AccountCollection, ClientCollection)
+    // prettier-ignore
+    res.status(200).json({message: 'invoice Cancelled  Successfully',data: doc, success: true,})
+  } catch (error) {
+    res.status(200).json({ message: error, data: null, success: false });
+  }
+};
 const getUnpaidInvoice = async (req, res) => {
   try {
-    const client_id = req.params.client_id
+    const client_id = req.params.client_id;
     // prettier-ignore
     const InvoiceCollection = mongoose.model(`${req.doc._id}-invoices`, require('../models/Invoice'))
     const doc = await InvoiceCollection.find({
-      $and: [
-        { 'invoice_data.status': true },
-        { 'client_data.client_id': client_id },
-        { 'invoice_data.balance': { $gt: 0 } },
-      ],
+      $and: [{ "invoice_data.status": true }, { "client_data.client_id": client_id }, { "invoice_data.balance": { $gt: 0 } }],
     })
       .select({
         _id: 1,
         client_data: 1,
-        'invoice_data.number': 1,
-        'invoice_data.date': 1,
-        'invoice_data.grand_total': 1,
-        'invoice_data.balance': 1,
+        "invoice_data.number": 1,
+        "invoice_data.date": 1,
+        "invoice_data.grand_total": 1,
+        "invoice_data.balance": 1,
       })
-      .sort({ 'invoice_data.date': 1 })
-      .exec()
+      .sort({ "invoice_data.date": 1 })
+      .exec();
     // prettier-ignore
     if (!doc) return res.status(200).json({ message: error, data: null, success: false })
     // prettier-ignore
     res.status(200).json({message: 'Un-Paid invoice details',data: doc, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const getPaginatedInvoicesAccoToType = async (req, res) => {
   try {
-    let { page, perPage, type } = req.params
-    let findOptions = {}
+    let { page, perPage, type } = req.params;
+    let findOptions = {};
     // prettier-ignore
     if (isNaN(page) || isNaN(perPage)) return res.status(200).json({message: 'Pagin Error',data: null,success: false,})
-    page = parseInt(page)
-    perPage = parseInt(perPage)
-    const startingPageForSort = (page - 1) * perPage
+    page = parseInt(page);
+    perPage = parseInt(perPage);
+    const startingPageForSort = (page - 1) * perPage;
 
-    if (type === 'All') findOptions = {}
-    else if (type === 'Cancel') findOptions = { 'invoice_data.status': false }
-    else if (type === 'Paid')
+    if (type === "All") findOptions = {};
+    else if (type === "Cancel") findOptions = { "invoice_data.status": false };
+    else if (type === "Paid")
       findOptions = {
-        $and: [{ 'invoice_data.balance': 0 }, { 'invoice_data.status': true }],
-      }
-    else if (type === 'Pending')
+        $and: [{ "invoice_data.balance": 0 }, { "invoice_data.status": true }],
+      };
+    else if (type === "Pending")
       findOptions = {
-        $and: [
-          { 'invoice_data.balance': { $gt: 0 } },
-          { 'invoice_data.status': true },
-        ],
-      }
+        $and: [{ "invoice_data.balance": { $gt: 0 } }, { "invoice_data.status": true }],
+      };
 
     // prettier-ignore
     const InvoiceCollection = mongoose.model(`${req.doc._id}-invoices`, require('../models/Invoice'))
     const doc = await InvoiceCollection.find(findOptions)
       .select({
         _id: 1,
-        'client_data.client_company_name': 1,
-        'client_data.client_name': 1,
-        'invoice_data.number': 1,
-        'invoice_data.date': 1,
-        'invoice_data.status': 1,
-        'invoice_data.grand_total': 1,
-        'invoice_data.balance': 1,
+        "client_data.client_company_name": 1,
+        "client_data.client_name": 1,
+        "invoice_data.number": 1,
+        "invoice_data.date": 1,
+        "invoice_data.status": 1,
+        "invoice_data.grand_total": 1,
+        "invoice_data.balance": 1,
       })
       .sort({ _id: -1 })
       .skip(startingPageForSort)
       .limit(perPage)
-      .exec()
+      .exec();
     // prettier-ignore
     if (!doc) return res.status(200).json({ message: error, data: null, success: false })
     // console.log(data);
-    const noOfInvoice = await InvoiceCollection.countDocuments(findOptions)
+    const noOfInvoice = await InvoiceCollection.countDocuments(findOptions);
     // prettier-ignore
     res.status(200).json({message: `Invoices after according to ${type} filter.`,data: doc, count :noOfInvoice, success: true,})
   } catch (error) {
-    console.log(error)
-    res.status(200).json({ message: error, data: null, success: false })
+    console.log(error);
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const getPaginatedInvoicesAccoToTypeAndSearch = async (req, res) => {
   try {
-    let { page, perPage, type, searchStr } = req.params
-    let findOptions = {}
+    let { page, perPage, type, searchStr } = req.params;
+    let findOptions = {};
     // prettier-ignore
     if (isNaN(page) || isNaN(perPage)) return res.status(200).json({message: 'Pagin Error',data: null,success: false,})
-    page = parseInt(page)
-    perPage = parseInt(perPage)
-    const startingPageForSort = (page - 1) * perPage
+    page = parseInt(page);
+    perPage = parseInt(perPage);
+    const startingPageForSort = (page - 1) * perPage;
 
-    if (type === 'All') findOptions = {}
-    else if (type === 'Cancel') findOptions = { 'invoice_data.status': false }
-    else if (type === 'Paid')
+    if (type === "All") findOptions = {};
+    else if (type === "Cancel") findOptions = { "invoice_data.status": false };
+    else if (type === "Paid")
       findOptions = {
-        $and: [{ 'invoice_data.balance': 0 }, { 'invoice_data.status': true }],
-      }
-    else if (type === 'Pending')
+        $and: [{ "invoice_data.balance": 0 }, { "invoice_data.status": true }],
+      };
+    else if (type === "Pending")
       findOptions = {
-        $and: [
-          { 'invoice_data.balance': { $gt: 0 } },
-          { 'invoice_data.status': true },
-        ],
-      }
-    let num
+        $and: [{ "invoice_data.balance": { $gt: 0 } }, { "invoice_data.status": true }],
+      };
+    let num;
     if (!isNaN(searchStr)) {
-      num = parseInt(searchStr)
+      num = parseInt(searchStr);
     }
     const searchOptions = {
       $or: [
         {
-          'invoice_data.number': num,
+          "invoice_data.number": num,
         },
         {
-          'client_data.client_company_name': new RegExp(searchStr, 'i'),
+          "client_data.client_company_name": new RegExp(searchStr, "i"),
         },
         {
-          'client_data.client_name': new RegExp(searchStr, 'i'),
+          "client_data.client_name": new RegExp(searchStr, "i"),
         },
         {
-          'client_data.client_phone': num,
+          "client_data.client_phone": num,
         },
       ],
-    }
+    };
 
     // prettier-ignore
     const InvoiceCollection = mongoose.model(`${req.doc._id}-invoices`, require('../models/Invoice'))
@@ -370,9 +363,9 @@ const getPaginatedInvoicesAccoToTypeAndSearch = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: `Invoices after according to ${type} filter and search term - ${searchStr}`,data: doc, count :noOfInvoice, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const getInvoicesReportWithDateFilter = async (re, res) => {
   try {
     // prettier-ignore
@@ -388,17 +381,17 @@ const getInvoicesReportWithDateFilter = async (re, res) => {
     // prettier-ignore
     res.status(200).json({message: `Invoices after date filter`,data: doc, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const getPaginatedInvoicesWithDateFilter = async (req, res) => {
   try {
-    let { page, perPage, start_date, end_date } = req.params
+    let { page, perPage, start_date, end_date } = req.params;
     // prettier-ignore
     if (isNaN(page) || isNaN(perPage)) return res.status(200).json({message: 'Pagin Error',data: null,success: false,})
-    page = parseInt(page)
-    perPage = parseInt(perPage)
-    const startingPageForSort = (page - 1) * perPage
+    page = parseInt(page);
+    perPage = parseInt(perPage);
+    const startingPageForSort = (page - 1) * perPage;
     // prettier-ignore
     const { startDate, endDate } = await dateFilter(start_date,end_date)
     // prettier-ignore
@@ -415,9 +408,9 @@ const getPaginatedInvoicesWithDateFilter = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: `Invoices after date filter`,data: doc, count :noOfInvoice, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const getAllInvoices = async (req, res) => {
   try {
     // prettier-ignore
@@ -431,9 +424,9 @@ const getAllInvoices = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: `All Invoices `,data: doc, count :noOfInvoice, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const getAllCancelledInvoices = async (req, res) => {
   try {
     // prettier-ignore
@@ -447,9 +440,9 @@ const getAllCancelledInvoices = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: `Showing cancelled invoices `,data: doc, count :noOfInvoice, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 const getAllInvoicesAccoToSearch = async (req, res) => {
   try {
     // prettier-ignore
@@ -483,9 +476,9 @@ const getAllInvoicesAccoToSearch = async (req, res) => {
     // prettier-ignore
     res.status(200).json({message: `Showing all cancelled invoices `,data: doc, count :doc.length, success: true,})
   } catch (error) {
-    res.status(200).json({ message: error, data: null, success: false })
+    res.status(200).json({ message: error, data: null, success: false });
   }
-}
+};
 module.exports = {
   createInvoice,
   getInvoiceDetail,
@@ -499,4 +492,4 @@ module.exports = {
   getAllInvoices,
   getAllCancelledInvoices,
   getAllInvoicesAccoToSearch,
-}
+};
