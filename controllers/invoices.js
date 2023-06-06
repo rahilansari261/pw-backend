@@ -61,7 +61,7 @@ const updateAccounts = async (invoice,AccountCollection,ClientCollection,isAdvan
     return error;
   }
 }
-const updateCancelAccounts = async (invoice, accounts, ClientCollection) => {
+const updateCancelAccounts = async (invoice, AccountCollection, ClientCollection) => {
   try {
     const newAccountEntry = {
       client_id: invoice.client_data.client_id,
