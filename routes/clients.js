@@ -6,6 +6,7 @@ const {
   updateClient,
   removeClient,
   getClientDetail,
+  getAllClients
   getClientWithSearchAndPaging,
   createClientAccounts,
 } = require('../controllers/clients')
@@ -13,6 +14,7 @@ const {
 router.route('/add').post(authJWT,createClient)
 router.route('/update').post(authJWT,updateClient)
 router.route('/:id').get(authJWT,getClientDetail)
+router.route('/all').get(authJWT,getAllClients)
 router.route('/remove/:id').get(authJWT,removeClient)
 router.route('/:page/:perPage/:searchStr').get(authJWT,getClientWithSearchAndPaging)
 router.route('/sorted/:page/:perPage/:searchStr').get(authJWT,getClientWithSearchAndPaging)

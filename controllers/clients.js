@@ -76,12 +76,28 @@ const getClientDetail = async (req, res) => {
     // prettier-ignore
     const ClientCollection = mongoose.model(`${req.doc._id}-clients`, require('../models/Client'))
     // prettier-ignore
-    const doc = await ClientCollection.findById({ _id: id })    
+    const doc = await ClientCollection.findById({ _id: id })
     // prettier-ignore
     if (!doc) return res.status(200).json({ message: error, data: null, success: false })
     // prettier-ignore
     res.status(200).json({ message: 'Client Information ', data: doc, success: true })
-  } catch (error) {    
+  } catch (error) {
+    console.log(error.message);
+    // prettier-ignore
+    res.status(200).json({message: error.message,success: false,})
+  }
+};
+const getAllClients = async (req, res) => {
+  try {
+    // prettier-ignore
+    const ClientCollection = mongoose.model(`${req.doc._id}-clients`, require('../models/Client'))
+    // prettier-ignore
+    const doc = await ClientCollection.find({ 'client_status': true }).select({ 'client_name': 1, 'client_company_name':1 }).exec()
+    // prettier-ignore
+    if (!doc) return res.status(200).json({ message: error, data: null, success: false })
+    // prettier-ignore
+    res.status(200).json({ message: 'All clients with some selected fields ', data: doc, success: true })
+  } catch (error) {
     console.log(error.message);
     // prettier-ignore
     res.status(200).json({message: error.message,success: false,})
@@ -184,6 +200,7 @@ module.exports = {
   createClient,
   updateClient,
   getClientDetail,
+  getAllClients,
   removeClient,
   getClientWithSearchAndPaging,
   createClientAccounts,
