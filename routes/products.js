@@ -8,6 +8,6 @@ router.route("/update").post(authJWT, updateProduct);
 router.route("/remove/:id").get(authJWT, removeProduct);
 router.route("/:id").get(authJWT, getProductDetail);
 router.route("/:page/:perPage/:searchStr").get(authJWT, getProductWithSearchAndPaging);
-router.route("/all").get(authJWT, getAllProducts);
+router.route("/selected/all").get(authJWT, getAllProducts);
 
 module.exports = router;
