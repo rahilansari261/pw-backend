@@ -169,7 +169,7 @@ const createInvoice = async (req, res) => {
     // prettier-ignore
     await updateAccounts(newInvoice, AccountCollection, ClientCollection, invoiceData.invoice_data.advancePayment, InvoiceCollection)
     // prettier-ignore
-    res.status(200).json({message: 'invoice Added Successfully',data: doc, success: true,})
+    res.status(200).json({message: 'invoice Added Successfully',data: createdInvoice, success: true,})
   } catch (error) {
     console.log(error);
     res.status(200).json({ message: error, data: null, success: false });
