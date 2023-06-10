@@ -128,18 +128,11 @@ const createInvoice = async (req, res) => {
     },
     product_data: [],
   };
-  // TODO apply loop to save all the tax summary in the array.
-  for (let i = 0; i < invoiceData.invoice_data.tax_summary.length; i++) {
-    newInvoice.invoice_data.tax_summary.push({
-      tax_name: invoiceData.invoice_data.tax_summary[i].tax_name,
-      tax_amount: invoiceData.invoice_data.tax_summary[i].tax_amount,
-    });
-  }
 
   for (let i = 0; i < invoiceData.product_data.length; i++) {
     newInvoice.product_data.push({
       product_name: invoiceData.product_data[i].product_name,
-      product_desc: invoiceData.product_data[i].product_desc,
+      product_desc: invoiceData.product_data[i].product_description,
       qty: invoiceData.product_data[i].qty,
       product_price: invoiceData.product_data[i].product_price,
       product_unit: invoiceData.product_data[i].product_unit,
@@ -148,6 +141,11 @@ const createInvoice = async (req, res) => {
       tax_rate: invoiceData.product_data[i].tax_rate,
       tax_amount: invoiceData.product_data[i].tax_amount,
       row_total: invoiceData.product_data[i].row_total,
+    });
+    newInvoice.invoice_data.tax_summary.push({
+      tax_name: invoiceData.product_data[i].tax_name,
+      tax_rate: invoiceData.product_data[i].tax_rate,
+      tax_amount: invoiceData.product_data[i].tax_amount,
     });
   }
 
