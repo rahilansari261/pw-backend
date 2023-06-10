@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const passwordHash = require("password-hash");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 // const asyncWrapper = require('../middleware/async')
 // const { createCustomError } = require('../errors/custom-error')
 const { dateFilter } = require("../utils/utils");
