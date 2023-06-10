@@ -83,6 +83,7 @@ const updateCancelAccounts = async (invoice, AccountCollection, ClientCollection
 };
 const createInvoice = async (req, res) => {
   const invoiceData = req.body.invoiceData;
+  console.log(invoiceData);
   // prettier-ignore
   if (!invoiceData) return res.status(200).json({message: ' Data Not Provided',data: null,success: false,})
   // prettier-ignore
