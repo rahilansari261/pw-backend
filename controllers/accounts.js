@@ -48,7 +48,7 @@ const createAccount = async (req, res) => {
       entry_type: accountData.entry_type,
       entry_amount_in: accountData.entry_amount_in,
       entry_amount_out: accountData.entry_amount_out,
-      // "entry_balance": accountData.entry_balance
+      entry_balance: accountData.entry_balance + accountData.entry_amount_out - accountData.entry_amount_in,
     };
     const doc = await AccountCollection.create(newAccount);
     // prettier-ignore
@@ -111,7 +111,7 @@ const getFindAndSortOptionsAccoToParams = async (client_id, searchString, start_
 
   return findAndSortOptions;
 };
-const getAccountDetails = async (req, res) => {  
+const getAccountDetails = async (req, res) => {
   try {
     // prettier-ignore
     let { client_id, searchString, page, perPage, start_date, end_date } = req.params
