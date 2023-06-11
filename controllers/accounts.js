@@ -67,71 +67,36 @@ const createAccount = async (req, res) => {
 };
 const getFindAndSortOptionsAccoToParams = async (client_id, searchString, start_date, end_date) => {
   let findAndSortOptions = {};
-  // if (start_date != 'no-start-date' && end_date != 'no-end-date') {
-  //   let { startDate, endDate } = await dateFilter(start_date, end_date)
-  // }
-  // 1-> getting accounts with date filter and paging
-  if (client_id === "no-id" && searchString === "no-search" && start_date != "no-start-date" && end_date != "no-end-date") {
-    const { startDate, endDate } = await dateFilter(start_date, end_date);
-    findAndSortOptions.findOptions = {
-      entry_date: {
-        $gte: startDate,
-        $lt: endDate,
-      },
-    };
-    findAndSortOptions.sortOptions = {
-      _id: -1,
-    };
-  }
-  // 2-> getting accounts of a client(client_id) and with search string and paging
-  else if (start_date === "no-start-date" && end_date === "no-end-date" && client_id != "no-id" && searchString != "no-search") {
-    findAndSortOptions.findOptions = {
-      $and: [{ entry_remarks: new RegExp(req.params.searchString, "i") }, { client_id: id }],
-    };
-    findAndSortOptions.sortOptions = { entry_date: -1 };
-  }
-  // 3-> getting accounts of a client(client_id) and paging
-  else if (start_date === "no-start-date" && end_date === "no-end-date" && client_id != "no-id") {
-    findAndSortOptions.findOptions = { client_id: client_id };
-    findAndSortOptions.sortOptions = { entry_date: -1 };
-  }
-  // 4-> getting accounts of a client(client_id) with date filter and paging  (TYPICAL)
-  // else if (
-  //   start_date != 'no-start-date' &&
-  //   end_date != 'no-end-date' &&
-  //   client_id != 'no-id' &&
-  //   searchString === 'no-search'
-  // ) {
-  //   findAndSortOptions.findOptions = {
-  //     $and: [
-  //       { entry_date: { $gte: startDate, $lt: endDate } },
-  //       { client_id: id },
-  //     ],
-  //   }
-  //   findAndSortOptions.sortOptions = { entry_date: -1 }
-  // }
+  findAndSortOptions.sortOptions = { entry_date: -1 };
 
-  // 5-> getting accounts with search filter and paging
-  else if (start_date === "no-start-date" && end_date === "no-end-date" && client_id === "no-id" && searchString != "no-search") {
+  // 1-> getting accounts with no query
+  if (start_date === "no-start-date" && end_date === "no-end-date" && searchString === "no-search") {
+    findAndSortOptions.findOptions = { client_id: client_id };
+  }
+
+  // 2-> getting accounts with date filter only
+  else if (searchString === "no-search" && start_date != "no-start-date" && end_date != "no-end-date") {
+    const { startDate, endDate } = await dateFilter(start_date, end_date);
     findAndSortOptions.findOptions = {
       $and: [
         {
-          $or: [
-            {
-              account_name: new RegExp(req.params.searchStr, "i"),
-            },
-            {
-              account_company: new RegExp(req.params.searchStr, "i"),
-            },
-          ],
+          entry_date: {
+            $gte: startDate,
+            $lt: endDate,
+          },
         },
+        { client_id: id },
       ],
     };
-    findAndSortOptions.sortOptions = { entry_date: -1 };
   }
-
-  // 6-> getting accounts of a client(client_id) with search and date filter and paging
-  else if (start_date != "no-start-date" && end_date != "no-end-date" && client_id != "no-id" && searchString != "no-search") {
+  // 3-> getting accounts with search string only
+  else if (start_date === "no-start-date" && end_date === "no-end-date" && searchString != "no-search") {
+    findAndSortOptions.findOptions = {
+      $and: [{ entry_remarks: new RegExp(req.params.searchString, "i") }, { client_id: id }],
+    };
+  }
+  // 4-> getting accounts of date filter and search
+  else if (start_date != "no-start-date" && end_date != "no-end-date" && searchString != "no-search") {
     const { startDate, endDate } = await dateFilter(start_date, end_date);
     findAndSortOptions.findOptions = {
       $and: [
@@ -142,18 +107,11 @@ const getFindAndSortOptionsAccoToParams = async (client_id, searchString, start_
         { client_id: id },
       ],
     };
-    findAndSortOptions.sortOptions = { entry_date: -1 };
   }
-  // 7-> getting accounts with no search filter and paging
-  else if (start_date === "no-start-date" && end_date === "no-end-date" && client_id === "no-id" && searchString === "no-search") {
-    console.log("yaha pr hu");
-    findAndSortOptions.findOptions = {};
-    findAndSortOptions.sortOptions = { entry_date: -1 };
-  }
+
   return findAndSortOptions;
 };
-const getAccountDetails = async (req, res) => {
-  console.log("numuste");
+const getAccountDetails = async (req, res) => {  
   try {
     // prettier-ignore
     let { client_id, searchString, page, perPage, start_date, end_date } = req.params
