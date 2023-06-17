@@ -8,7 +8,7 @@ const { dateFilter } = require("../utils/utils");
 // <!-- two api remaining getAll and 1 in getAccountDetails function that is commented -->
 
 const updateInvoices = async (accountData, InvoiceCollection) => {
-  for (const i = 0; i < accountData.invoice_list.length; i++) {
+  for (let i = 0; i < accountData.invoice_list.length; i++) {
     await InvoiceCollection.updateOne(
       { _id: accountData.invoice_list[i]._id },
       {
