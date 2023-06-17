@@ -48,7 +48,7 @@ const createAccount = async (req, res) => {
       entry_type: accountData.entry_type,
       entry_amount_in: accountData.entry_amount_in,
       entry_amount_out: accountData.entry_amount_out,
-      entry_balance: accountData.entry_balance ,
+      entry_balance: accountData.entry_balance,
     };
     const doc = await AccountCollection.create(newAccount);
     // prettier-ignore
@@ -61,6 +61,7 @@ const createAccount = async (req, res) => {
     // prettier-ignore
     return res.status(200).json({message: 'Account Update Successfully',data: doc,success: true})
   } catch (error) {
+    console.log(error);
     // prettier-ignore
     res.status(200).json({message: error,success: false,})
   }
