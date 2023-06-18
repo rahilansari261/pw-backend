@@ -55,8 +55,10 @@ const createAccount = async (req, res) => {
     if (!doc) return res.status(200).json({ message: error, data: null, success: false })
     else {
       console.log(accountData.entry_balance)
+      console.log(accountData.client_id)
       // prettier-ignore
-      await ClientCollection.findOneAndUpdate({ _id: accountData.client_id }, { client_balance: accountData.entry_balance } )
+      const rawra = await ClientCollection.findOneAndUpdate({ _id: accountData.client_id }, { client_balance: accountData.entry_balance } )
+      console.log(rawra)
     }
     if (accountData.entry_amount_in > 0) await updateInvoices(accountData, InvoiceCollection);
     // prettier-ignore
