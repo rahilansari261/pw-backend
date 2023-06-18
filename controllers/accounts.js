@@ -54,6 +54,7 @@ const createAccount = async (req, res) => {
     // prettier-ignore
     if (!doc) return res.status(200).json({ message: error, data: null, success: false })
     else {
+      console.log(accountData.entry_balance)
       // prettier-ignore
       await ClientCollection.updateOne({ _id: accountData.client_id }, { client_balance: accountData.entry_balance } )
     }
