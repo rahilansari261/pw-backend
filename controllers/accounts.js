@@ -53,9 +53,10 @@ const createAccount = async (req, res) => {
     if (!doc) {
       return res.status(200).json({ message: error, data: null, success: false });
     }
-    const clientDoc = await ClientCollection.find({ _id: accountData.client_id });
-    clientDoc.client_balance = accountData.entry_balance;
-    await clientDoc.save();
+    const cDoc = await ClientCollection.findOne({ _id: accountData.client_id });
+    cDoc.client_balance = accountData.entry_balance;
+    console.log(cDoc);
+    await cDoc.save();
     if (accountData.entry_amount_in > 0) await updateInvoices(accountData, InvoiceCollection);
     // prettier-ignore
     return res.status(200).json({message: 'Account Update Successfully',data: doc,success: true})
