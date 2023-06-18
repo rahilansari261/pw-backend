@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
-const passwordHash = require("password-hash");
+
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
-// const asyncWrapper = require('../middleware/async')
-// const { createCustomError } = require('../errors/custom-error')
+
 const { dateFilter } = require("../utils/utils");
 // <!-- two api remaining getAll and 1 in getAccountDetails function that is commented -->
 
@@ -55,8 +53,9 @@ const createAccount = async (req, res) => {
     if (!doc) {
       return res.status(200).json({ message: error, data: null, success: false });
     }
-    await ClientCollection.findOneAndUpdate({ _id: accountData.client_id }, { $set: { client_balance: accountData.entry_balance } });
-
+    const clientDoc = await ClientCollection.find({ _id: accountData.client_id });
+    clientDoc.client_balance = accountData.entry_balance;
+    await clientDoc.save();
     if (accountData.entry_amount_in > 0) await updateInvoices(accountData, InvoiceCollection);
     // prettier-ignore
     return res.status(200).json({message: 'Account Update Successfully',data: doc,success: true})
