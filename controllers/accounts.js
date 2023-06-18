@@ -54,7 +54,7 @@ const createAccount = async (req, res) => {
       return res.status(200).json({ message: error, data: null, success: false });
     }
 
-    const cDoc = await ClientCollection.updateOne({ _id: accountData.client_id }, { $set: { client_balance: accountData.entry_balance } }, { upsert: true });
+    const cDoc = await ClientCollection.updateOne({ _id: accountData.client_id }, { $set: { client_balance: accountData.entry_balance } });
 
     console.log(cDoc);
 
