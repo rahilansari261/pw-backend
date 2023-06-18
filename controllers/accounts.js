@@ -54,6 +54,7 @@ const createAccount = async (req, res) => {
       return res.status(200).json({ message: error, data: null, success: false });
     }
     const cDoc = await ClientCollection.findOne({ _id: accountData.client_id });
+    console.log(cDoc);
     cDoc.client_balance = accountData.entry_balance;
     console.log(cDoc);
     await cDoc.save();
