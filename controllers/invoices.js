@@ -90,7 +90,7 @@ const createInvoice = async (req, res) => {
     // prettier-ignore
     const InvoiceCollection = mongoose.model(`${req.doc._id}-invoices`, require('../models/Invoice'))
     // prettier-ignore
-    const ChartSaleCollection = mongoose.model(`${req.doc._id}-chartsale`, require('../models/ChartSale'))
+    const ChartSaleCollection = mongoose.model(`${req.doc._id}-saledatas`, require('../models/ChartSale'))
     // prettier-ignore
     const AccountCollection = mongoose.model(`${req.doc._id}-accounts`, require('../models/Account'))
     // prettier-ignore
@@ -209,7 +209,7 @@ const cancelInvoice = async (req, res) => {
     // prettier-ignore
     const InvoiceCollection = mongoose.model(`${req.doc._id}-invoices`, require('../models/Invoice'))
     // prettier-ignore
-    const ChartSaleCollection = mongoose.model(`${req.doc._id}-chartsale`, require('../models/ChartSale'))
+    const ChartSaleCollection = mongoose.model(`${req.doc._id}-saledatas`, require('../models/ChartSale'))
     // prettier-ignore
     const AccountCollection = mongoose.model(`${req.doc._id}-accounts`, require('../models/Account'))
     // prettier-ignore
