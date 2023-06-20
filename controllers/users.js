@@ -310,6 +310,22 @@ const addTandC = async (req, res) => {
   }
 };
 
+const salesGraph = async (req, res) => {
+  try {
+    const ChartSaleCollection = mongoose.model(`${req.doc._id}-chartsale`, require("../models/ChartSale"));
+    // prettier-ignore
+    const doc = await ChartSaleCollection.find()
+    // prettier-ignore
+    if (!doc) return res.status(200).json({ message: error, data: null, success: false })
+    // prettier-ignore
+    res.status(200).json({ message: 'Sales data Information ', data: doc, success: true })
+  } catch (error) {
+    console.log(error.message);
+    // prettier-ignore
+    res.status(200).json({message: error.message,success: false,})
+  }
+};
+
 module.exports = {
   getUser,
   createUser,
@@ -322,4 +338,5 @@ module.exports = {
   addtaxUser,
   removeTaxUser,
   addTandC,
+  salesGraph,
 };
