@@ -312,7 +312,7 @@ const addTandC = async (req, res) => {
 
 const salesGraph = async (req, res) => {
   try {
-    const ChartSaleCollection = mongoose.model(`${req.doc._id}-saledatas`, require("../models/ChartSale"));
+    const ChartSaleCollection = mongoose.model(`${req.doc._id}-salesdatas`, require("../models/ChartSale"));
     // prettier-ignore
     const doc = await ChartSaleCollection.find({})
     // prettier-ignore
