@@ -314,7 +314,7 @@ const salesGraph = async (req, res) => {
   try {
     const ChartSaleCollection = mongoose.model(`${req.doc._id}-chartsale`, require("../models/ChartSale"));
     // prettier-ignore
-    const doc = await ChartSaleCollection.find()
+    const doc = await ChartSaleCollection.find({})
     // prettier-ignore
     if (!doc) return res.status(200).json({ message: error, data: null, success: false })
     // prettier-ignore
