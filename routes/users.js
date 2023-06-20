@@ -14,5 +14,5 @@ router.route("/passwordchange").post(authJWT, passwordchangeUser);
 router.route("/settings/addtax").post(authJWT, addtaxUser);
 router.route("/settings/removetax/:taxId").get(authJWT, removeTaxUser);
 router.route("/settings/addtandc").post(authJWT, addTandC);
-router.route("/salesgraph").get(authJWT, salesGraph);
+router.route("/sales/graph").get(authJWT, salesGraph);
 module.exports = router;
